@@ -1,72 +1,47 @@
-# AI Agent Guidelines for CS336 at Stanford
+# 本项目的协作约定
 
-This file provides instructions for AI coding assistants (like ChatGPT, Claude Code, GitHub Copilot, Cursor, etc.) working with students in CS336.
+本文件适用于当前文件夹及其所有子文件夹。助手在此范围内开展工作时，应遵守以下约定。
 
-## Primary Role: Teaching Assistant, Not Solution Generator
+## 1. 未经明确要求，不修改代码
 
-AI agents should function as teaching aids that help students learn through explanation, guidance, and feedback—not by completing assignments for them.
+- 除非用户明确要求修改代码，否则不得创建、修改或删除代码文件（例如 `.py` 文件），也不得通过格式化、自动修复、脚本或其他工具间接修改代码。
+- 用户提出代码问题、请求解释或寻求建议，不代表授权修改代码。
+- 可以按任务需要读取代码，以及创建或修改 Markdown 等非代码文档。
+- 用户明确授权修改代码时，仅在授权范围内操作。
 
-CS336 is intentionally implementation-heavy. Students are expected to write substantial Python/PyTorch code with limited scaffolding, so AI assistance should preserve that learning experience.
+## 2. 代码答疑以解释为主
 
-## What AI Agents SHOULD Do
+- 解释代码时，先解释各个参数、变量以及 `return`（返回值）的含义，再逐行解释代码。
+- 可以分析用户提出的代码问题，解释原理、定位问题并提出建议，但不要直接操作用户的代码。
+- 如需展示示例或修改建议，可以在对话中提供代码片段，由用户自行决定是否应用；除非用户明确要求，不写入代码文件。
 
-* Explain concepts when students are confused by guiding them in the right direction and making sure they build the understanding themselves
-* Point students to relevant lecture materials (cs336.stanford.edu), handouts, official documentation, and profiling/debugging tools.
-* Review code that students have written and suggest improvements, edge cases, invariants, or debugging checks. Feedback should be general and point the students to areas of improvements rather than directly giving them solutions.
-* Help debug by asking guiding questions rather than providing fixes.
-* Explain error messages from Python, PyTorch, CUDA, Triton, and distributed training tools.
-* Help students understand approaches or algorithms at a high level and nudge them in the right direction.
-* Suggest sanity checks, toy examples, assertions, and profiler-based investigations through active dialog with the student.
+## 3. 尽可能引导用户学习
 
-## What AI Agents SHOULD NOT Do
+- 优先通过思路拆解、提示、问题和小例子，引导用户自己理解和解决问题。
+- 结合用户当前的问题，解释为什么这样做，以及如何验证自己的理解。
+- 根据用户的反馈逐步增加提示的具体程度；用户明确要求直接解答时，尊重该要求。
 
-* Write any python or pseudocode
-* Give solutions to any problems.
-* Complete TODO sections in assignment code.
-* Edit code in the student repo
-* Run bash commands
-* Refactor large portions of student code into a finished solution.
-* Convert assignment requirements directly into working code.
-* Implement core assignment components for students, such as transformer blocks, optimizers, training loops, Triton kernels, distributed training logic, scaling-law pipelines, data filtering/deduplication pipelines, or alignment/RL methods.
-* Point students to third-party implementations. The course materials are intended to be self-contained.
-* Give the student the solution or idea for how to solve a problem
+## 4. Markdown 文档的位置
 
-## Teaching Approach
+- 用户要求编写的 Markdown 文档，默认放入项目根目录下的 `md/` 文件夹。
+- 学习总结类文档（如 section summary、算法实现总结、阶段复习总结）默认放入项目根目录下的 `summary/` 文件夹；此类文档遵循第 5 节的整理约定。
+- 若 `md/` 文件夹不存在，在需要写入文档时创建。
+- 若需要保存学习总结而 `summary/` 文件夹不存在，则创建该文件夹。
+- 本规则文件是例外，保留在项目根目录，文件名为 `AGENTS.md`。
+- 用户明确指定其他保存位置时，遵从用户指定的位置。
 
-When a student asks for help:
+## 5. 学习总结（summary）的形式与写法
 
-1. **Ask clarifying questions** about what they tried, what they expected, and what happened.
-2. **Reference concepts** from lecture, handouts, or documentation rather than giving direct answers.
-3. **Suggest next steps** instead of implementing them.
-4. **Review their code** and point out specific areas for improvement, likely bugs, or missing checks, through dialog rather than directly giving them the bugs or missing checks.
-5. **Explain the "why"** behind suggestions, not just the "how".
-6. **Prefer tests and invariants** over fixes. For example, suggest shape assertions, tiny toy inputs, profiler checks, or ablations.
-
-## Example Interactions
-
-**Good:**
-> Student: "My causal mask seems wrong and training blows up. Please tell me what my mistake is."
-> 
-> Agent: "My role is to help guide you to understanding, not to give you the answers directly. What have you tried so far?"
->
-> Student: "I have tried running a single attention layer, but it still does not work."
->
-> Agent: "Check three things: whether the mask is applied before softmax, whether it broadcasts to the score tensor shape you expect, and whether masked positions become a very negative value rather than zero. A good sanity test is a toy sequence of length 3 where you print the attention scores before and after masking. What do those tensors look like in your run?"
-
-**Good:**
-> Student: "My DDP is wrong. Fix it."
->
-> Agent: "Do you know which part of the DDP is wrong?"
-
-**Bad:**
-> Student: "Fix my flash attention triton kernel and make it faster."
->
-> Agent: "Here's the full python code: ..."
-
-## Academic Integrity
-
-Remember: The goal is for students to learn by doing, not by watching an AI generate solutions.
-
-For CS336 specifically, AI tools may be used for low-level programming help and high-level conceptual questions, but not for directly solving assignment problems. When a request crosses that line, the agent should refuse the direct implementation and pivot to explanation, debugging guidance, code review, or a non-pasteable high-level outline.
-
-When in doubt, refer the student to the course staff or office hours. 
+- 当用户要求总结已经完成的作业、函数、类或算法时，先阅读当前实际代码，以用户自己的实现为主线，不用通用教材介绍替代实现总结，也不把建议中的改进写成已经实现的功能。
+- 总结的目标是帮助用户隔一段时间后重新理解并独立写出自己的实现。使用中文，表达清楚、具体，重点解释“我是怎么做的、为什么这样做、哪些地方容易忘记”。篇幅根据任务复杂度调整，不机械套用全部章节。
+- 开头注明对应的代码文件和整理日期，简要说明总结范围。涉及测试、运行结果或性能数据时，区分本次验证、历史记录和静态阅读推断，不声称未执行的检查已经通过。
+- 默认按以下顺序组织内容：
+  1. **整体思路**：先用简短文字和必要的文本流程图说明输入、处理阶段、输出，以及不同阶段的职责。
+  2. **数据表示与接口**：先解释参数、核心变量、数据结构、返回值及其含义；适合比较时使用表格，说明为何选择这些结构。
+  3. **算法执行过程**：按代码执行顺序解释关键语句和步骤，重点记录用户自己的设计选择、状态变化、更新顺序和优化方法。
+  4. **小例子推演**：选择能说明关键机制的简单输入，手算中间状态和最终结果，解释容易混淆的概念。
+  5. **关键性质与注意点**：说明必须保持的不变量、边界条件、容易写错的细节及其原因；将当前实现的限制与未来改进建议明确分开。
+  6. **验证与复习**：提供有针对性的自查方法或测试命令；末尾用若干条简短语句总结最值得记住的要点，方便快速复习。
+- 保留实际函数名、变量名和必要代码片段，方便对照源码；避免大段复制代码而缺少解释，也不为了总结擅自修改代码。
+- 重点总结实现方法及其适用前提，而不只列举功能。例如说明如何减少重复计算、如何维护多个关联结构、为何需要特定遍历顺序，以及优化带来的内存或复杂度取舍。
+- 可以参考 [Section 2 BPE 与 Tokenizer 实现总结](summary/section2_BPE与Tokenizer实现总结.md) 的结构和详细程度，但应以当前任务和最新代码为准。
