@@ -8,7 +8,7 @@ import json
 from typing import BinaryIO,IO
 from pathlib import Path
 from cs336_basics.bpe import Tokenizer
-from optimization import cross_entropy
+from cs336_basics.optimization import cross_entropy
 from itertools import islice
 
 def get_batch(

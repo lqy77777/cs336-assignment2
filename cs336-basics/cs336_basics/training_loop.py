@@ -1,9 +1,9 @@
 import numpy as np
-from bpe import train_bpe,Tokenizer
-from transformer import transformer_lm
-from optimization import AdamW ,cross_entropy,gradient_clipping, learning_rate_schedule
-from tool import get_batch,tokenize_text_to_bin,save_checkpoint, load_checkpoint
-from tool import log_jsonl,evaluate,make_fixed_batches
+from cs336_basics.bpe import train_bpe,Tokenizer
+from cs336_basics.transformer import transformer_lm
+from cs336_basics.optimization import AdamW ,cross_entropy,gradient_clipping, learning_rate_schedule
+from cs336_basics.tool import get_batch,save_checkpoint, load_checkpoint
+from cs336_basics.tool import log_jsonl,evaluate,make_fixed_batches
 import torch
 import torch.nn as nn
 from torch import Tensor
