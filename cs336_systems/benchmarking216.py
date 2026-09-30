@@ -145,12 +145,12 @@ def main(config: TrainConfig) -> None:
             weight_decay = config.weight_decay
         )
         for _ in range(w):
-            run_step(model,inputs,targets,optimizer,mode = mode,use_mixed_precision = False)
+            run_step(model,inputs,targets,optimizer,mode = mode,use_mixed_precision = True)
             torch.cuda.synchronize("cuda")
         torch.cuda.reset_peak_memory_stats()
         torch.cuda.memory._record_memory_history(max_entries=1_000_000)
 
-        run_step(model,inputs,targets,optimizer,mode = mode,use_mixed_precision = False)
+        run_step(model,inputs,targets,optimizer,mode = mode,use_mixed_precision = True)
         torch.cuda.synchronize("cuda")
         peak_bytes = torch.cuda.max_memory_allocated()
         snapshot_path = (f"memory_snapshot_{mode}.pickle")
