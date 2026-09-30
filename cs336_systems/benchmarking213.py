@@ -10,7 +10,7 @@ import statistics
 import gc
 
 
-size = "small"  
+size = "medium"  
 MODEL_CONFIGS = {
     "small": {
         "d_model": 768,
@@ -93,21 +93,17 @@ def run_step(model, inputs, targets, optimizer,mode):
     if mode in {'forward_backward','full_step'}:
         model.zero_grad(set_to_none = True)
     
-    with torch.cuda.nvtx.range("forward"):
-        logits = model(inputs)
+    logits = model(inputs)
 
     if mode == "forward":
         return
 
-    with torch.cuda.nvtx.range("loss"):
-        loss = cross_entropy(logits, targets)
+    loss = cross_entropy(logits, targets)
 
-    with torch.cuda.nvtx.range("backward"):
-        loss.backward()
+    loss.backward()
 
     if mode == "full_step":
-        with torch.cuda.nvtx.range("optimizer"):
-            optimizer.step()
+        optimizer.step()
     
     return
 def main(config: TrainConfig) -> None:
