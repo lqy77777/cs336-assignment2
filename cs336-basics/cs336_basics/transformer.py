@@ -119,7 +119,6 @@ def scaled_dot_product_attention(
         weight = torch.where(mask,weight, float('-inf'))
     return einsum(softmax(weight / sqrt(d_k), dim = -1),V, "... query key, ... key d_v -> ... query d_v")
     
-
 class multihead_self_attention(nn.Module):
     def __init__(
             self,
@@ -155,6 +154,39 @@ class multihead_self_attention(nn.Module):
         mask = torch.tril(torch.ones(seq_len,seq_len,device = x.device,dtype = torch.bool))
         A = scaled_dot_product_attention(Q,K,V,mask)
         A = rearrange(A, "... h seq_len d -> ... seq_len (h d)")
+        return self.W_O(A)
+    
+class self_attention(nn.Module):
+    '''
+    single head self-attention
+    '''
+    def __init__(
+            self,
+            d_model: int,
+            theta: float = None,
+            max_seq_len: int = None,
+            device = None,
+            dtype = None
+        ):
+        super().__init__()
+        self.W_Q = Linear(d_model,d_model,device = device,dtype = dtype)
+        self.W_K = Linear(d_model,d_model,device = device,dtype = dtype)
+        self.W_V = Linear(d_model,d_model,device = device,dtype = dtype)
+        self.W_O = Linear(d_model,d_model,device = device,dtype = dtype)
+        self.d_model = d_model
+        self.theta = theta
+        if theta is not None:
+            self.rope = rope(self.theta, d_model, max_seq_len,device = device, dtype=dtype)
+    def forward(self,x: Tensor, token_positions = None) -> Tensor:
+        seq_len = x.size(-2)
+        Q, K, V = self.W_Q(x), self.W_K(x), self.W_V(x)
+        if self.theta is not None:
+            if token_positions is None:
+                token_positions = torch.arange(0,seq_len,device = x.device)
+            token_positions = token_positions.unsqueeze(-2)   #why 
+            Q,K = self.rope(Q,token_positions),self.rope(K,token_positions)
+        mask = torch.tril(torch.ones(seq_len,seq_len,device = x.device,dtype = torch.bool))
+        A = scaled_dot_product_attention(Q,K,V,mask)
         return self.W_O(A)
 class transformer_block(nn.Module):
     def __init__(
